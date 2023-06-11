@@ -5,19 +5,32 @@ function displayCityWeather(weatherData) {
     var weatherContainer = document.getElementById('weatherContainer');
     weatherContainer.innerHTML = '';
 
-    if (weatherData && weatherData.name && weatherData.main && weatherData.main.temp && weatherData.weather && weatherData.weather[0] && weatherData.weather[0].description) {
-        var cityNameEl = document.createElement('div');
-        cityNameEl.textContent = 'City: ' + weatherData.name;
+    if (weatherData && weatherData.list && weatherData.list.length > 0) {
+        for (var i = 0; i < weatherData.list.length; i++) {
+            var forecast = weatherData.list[i];
 
-        var tempEl = document.createElement('div');
-        tempEl.textContent = 'Temperature: ' + weatherData.main.temp;
+            var forecastContainer = document.createElement('div');
 
-        var infoEl = document.createElement('div');
-        infoEl.textContent = 'Forecast: ' + weatherData.weather[0].description;
+            var dateEl = document.createElement('div');
+            dateEl.textContent = 'Date: ' + forecast.dt_txt;
 
-        weatherContainer.appendChild(cityNameEl);
-        weatherContainer.appendChild(tempEl);
-        weatherContainer.appendChild(infoEl);
+            var tempEl = document.createElement('div');
+            tempEl.textContent = 'Temperature: ' + forecast.main.temp;
+
+            var infoEl = document.createElement('div');
+            infoEl.textContent = 'Forecast: ' + forecast.weather[0].description;
+
+            forecastContainer.appendChild(dateEl);
+            forecastContainer.appendChild(tempEl);
+            forecastContainer.appendChild(infoEl);
+
+            forecastContainer.style.marginBottom = '10px';
+            forecastContainer.style.border = '1px solid black';
+            forecastContainer.style.padding = '10px';
+            forecastContainer.style.backgroundColor = 'lightgray';
+
+            weatherContainer.appendChild(forecastContainer);
+        }
 
         weatherContainer.style.border = '1px solid black';
         weatherContainer.style.padding = '10px';
@@ -36,9 +49,9 @@ searchButton.addEventListener('click', function (event) {
 
     if (cityData) {
         var apiURL =
-            'https://api.openweathermap.org/data/2.5/weather?q=' +
+            'https://api.openweathermap.org/data/2.5/forecast?q=' +
             cityData +
-            '&appid=69d0bc2f7af62a8be51de0f9dcf280b5';
+            '&cnt=5&appid=69d0bc2f7af62a8be51de0f9dcf280b5&units=imperial';
 
         fetch(apiURL)
             .then(response => response.json())
@@ -48,7 +61,7 @@ searchButton.addEventListener('click', function (event) {
             })
             .catch(error => {
                 console.log('Error: ', error);
-                displayCityWeather(null); // Show error message
+                displayCityWeather(null); 
             });
     } else {
         console.log('Please enter a city');
