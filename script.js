@@ -6,13 +6,15 @@ function displayCityWeather(weatherData) {
     weatherContainer.innerHTML = '';
 
     if (weatherData && weatherData.list && weatherData.list.length > 0) {
-        for (var i = 0; i < weatherData.list.length; i++) {
-            var forecast = weatherData.list[i];
+        var forecastByDay = groupForecastsByDay(weatherData.list);
+
+        for (var date in forecastByDay) {
+            var forecast = forecastByDay[date];
 
             var forecastContainer = document.createElement('div');
 
             var dateEl = document.createElement('div');
-            dateEl.textContent = 'Date: ' + forecast.dt_txt;
+            dateEl.textContent = 'Date: ' + date;
 
             var tempEl = document.createElement('div');
             tempEl.textContent = 'Temperature: ' + forecast.main.temp;
@@ -41,6 +43,21 @@ function displayCityWeather(weatherData) {
         weatherContainer.style.padding = '0';
         weatherContainer.style.backgroundColor = 'transparent';
     }
+}
+
+function groupForecastsByDay(forecasts) {
+    var forecastByDay = {};
+
+    for (var i = 0; i < forecasts.length; i++) {
+        var forecast = forecasts[i];
+        var date = forecast.dt_txt.split(' ')[0]; 
+
+        if (!forecastByDay[date]) {
+            forecastByDay[date] = forecast;
+        }
+    }
+
+    return forecastByDay;
 }
 
 searchButton.addEventListener('click', function (event) {
