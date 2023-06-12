@@ -25,21 +25,26 @@ function displayCityWeather(weatherData) {
             var infoEl = document.createElement('div');
             infoEl.textContent = 'Forecast: ' + forecast[0].weather[0].description;
 
+            var humidityEl = document.createElement('div');
+            humidityEl.textContent = 'Humidity: ' + forecast[0].main.humidity + '%';
+
             forecastContainer.appendChild(dateEl);
             forecastContainer.appendChild(tempEl);
             forecastContainer.appendChild(infoEl);
+            forecastContainer.appendChild(humidityEl);
 
             forecastContainer.style.marginBottom = '10px';
             forecastContainer.style.border = '1px solid black';
             forecastContainer.style.padding = '10px';
-            forecastContainer.style.backgroundColor = 'lightgray';
+            forecastContainer.style.backgroundColor = '#3C4475';
 
             weatherContainer.appendChild(forecastContainer);
         }
 
         weatherContainer.style.border = '1px solid black';
         weatherContainer.style.padding = '10px';
-        weatherContainer.style.backgroundColor = 'lightgray';
+        weatherContainer.style.backgroundColor = '#3C4475';
+        weatherContainer.style.color = 'white';
     } else {
         weatherContainer.textContent = 'Error retrieving weather data';
         weatherContainer.style.border = 'none';
