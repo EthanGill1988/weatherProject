@@ -6,21 +6,24 @@ function displayCityWeather(weatherData) {
     weatherContainer.innerHTML = '';
 
     if (weatherData && weatherData.list && weatherData.list.length > 0) {
-        var forecastByDay = groupForecastsByDay(weatherData.list);
+        var forecastsByDay = groupForecastsByDay(weatherData.list);
+        var days = Object.keys(forecastsByDay).slice(0,5);
 
-        for (var date in forecastByDay) {
-            var forecast = forecastByDay[date];
+        for (var i = 0; i < days.length; i++) {
+            var day = days[i];
+            var forecast = forecastsByDay[day];
+            
 
             var forecastContainer = document.createElement('div');
 
             var dateEl = document.createElement('div');
-            dateEl.textContent = 'Date: ' + date;
+            dateEl.textContent = 'Date: ' + day;
 
             var tempEl = document.createElement('div');
-            tempEl.textContent = 'Temperature: ' + forecast.main.temp;
+            tempEl.textContent = 'Temperature: ' + forecast[0].main.temp;
 
             var infoEl = document.createElement('div');
-            infoEl.textContent = 'Forecast: ' + forecast.weather[0].description;
+            infoEl.textContent = 'Forecast: ' + forecast[0].weather[0].description;
 
             forecastContainer.appendChild(dateEl);
             forecastContainer.appendChild(tempEl);
@@ -46,18 +49,19 @@ function displayCityWeather(weatherData) {
 }
 
 function groupForecastsByDay(forecasts) {
-    var forecastByDay = {};
+    var groupedForecasts = {};
 
     for (var i = 0; i < forecasts.length; i++) {
         var forecast = forecasts[i];
         var date = forecast.dt_txt.split(' ')[0]; 
 
-        if (!forecastByDay[date]) {
-            forecastByDay[date] = forecast;
+        if (!groupedForecasts[date]) {
+            groupedForecasts[date] = [];
         }
+        groupedForecasts[date].push(forecast);
     }
 
-    return forecastByDay;
+    return groupedForecasts;
 }
 
 searchButton.addEventListener('click', function (event) {
@@ -68,7 +72,7 @@ searchButton.addEventListener('click', function (event) {
         var apiURL =
             'https://api.openweathermap.org/data/2.5/forecast?q=' +
             cityData +
-            '&cnt=5&appid=69d0bc2f7af62a8be51de0f9dcf280b5&units=imperial';
+            '&cnt=40&appid=69d0bc2f7af62a8be51de0f9dcf280b5&units=imperial';
 
         fetch(apiURL)
             .then(response => response.json())
