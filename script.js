@@ -108,6 +108,11 @@ function displayCityHistory() {
         var li = document.createElement('li');
         li.textContent = 'Name: ' + cityData.name;
 
+        li.addEventListener('click', function(event) {
+            var cityName = event.target.textContent;
+            console.log(cityName);
+        });
+
         ul.appendChild(li);
     }
 
