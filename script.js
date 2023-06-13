@@ -69,26 +69,31 @@ function groupForecastsByDay(forecasts) {
     return groupedForecasts;
 }
 
+function getCityForecast(cityName) {
+    var apiURL =
+        'https://api.openweathermap.org/data/2.5/forecast?q=' +
+        cityName +
+        '&cnt=40&appid=69d0bc2f7af62a8be51de0f9dcf280b5&units=imperial';
+
+    fetch(apiURL)
+        .then(response => response.json())
+        .then(data => {
+            console.log('Weather data for ' + cityName + ': ', data);
+            displayCityWeather(data);
+        })
+        .catch(error => {
+            console.log('Error: ', error);
+            displayCityWeather(null); 
+        });
+};
+
+
 searchButton.addEventListener('click', function (event) {
     var cityData = document.getElementById('input1').value;
     event.preventDefault();
 
     if (cityData) {
-        var apiURL =
-            'https://api.openweathermap.org/data/2.5/forecast?q=' +
-            cityData +
-            '&cnt=40&appid=69d0bc2f7af62a8be51de0f9dcf280b5&units=imperial';
-
-        fetch(apiURL)
-            .then(response => response.json())
-            .then(data => {
-                console.log('weather data: ', data);
-                displayCityWeather(data);
-            })
-            .catch(error => {
-                console.log('Error: ', error);
-                displayCityWeather(null); 
-            });
+       getCityForecast(cityData);
     } else {
         console.log('Please enter a city');
     }
@@ -112,10 +117,12 @@ function displayCityHistory() {
         var cityData = cityHistory[i];
         var li = document.createElement('li');
         li.textContent = 'Name: ' + cityData.name;
+        li.dataset.index = i;
 
         li.addEventListener('click', function(event) {
-            var cityName = event.target.textContent;
-            console.log(cityName);
+            var selectedIndex = parseInt(event.target.dataset.index);
+            var selectedCity = cityHistory[selectedIndex];
+            getCityForecast(selectedCity.name);
         });
 
         ul.appendChild(li);
